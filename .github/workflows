@@ -1,1 +1,32 @@
 
+name: Build VEH Patch DLL
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setup CMake
+      uses: lukka/get-cmake@v3
+
+    - name: Configure and Build (x64)
+      run: |
+        mkdir build
+        cd build
+        cmake -A x64 ..
+        cmake --build . --config Release
+
+    - name: Upload DLL artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: veh_patch_dlls
+        path: build/Release/*.dll
